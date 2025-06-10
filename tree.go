@@ -688,7 +688,7 @@ func (root *Tree) SetValue(value any, src []string) error {
 	return nil
 }
 
-func (root *Tree) GetString(sep string, src []string) (string, error) {
+func (root *Tree) GetLine(sep string, src []string) (string, error) {
 	var result string
 	var v string
 
