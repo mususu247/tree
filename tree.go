@@ -289,7 +289,7 @@ func (root *Tree) Open(fileName string) error {
 
 	root.fileName = fileName
 
-	root.Indent, err = root.getValueStr([]string{"options", "indent"})
+	root.Indent, err = root.GetValueStr([]string{"options", "indent"})
 	if err != nil {
 		return err
 	}
@@ -407,7 +407,7 @@ func (root *Tree) Find(names []string) (*Twig, error) {
 	return nil, fmt.Errorf("not found: %v", names[count])
 }
 
-func (root *Tree) FindPlus(names []string) (*Twig, *Twig, error) {
+func (root *Tree) findPlus(names []string) (*Twig, *Twig, error) {
 	var count int
 
 	if root.Base == nil {
@@ -488,7 +488,7 @@ func (root *Tree) Delete(dst []string) error {
 		return nil
 	}
 
-	td, tr, err := root.FindPlus(dst)
+	td, tr, err := root.findPlus(dst)
 	if err != nil {
 		return err
 	}
@@ -580,7 +580,7 @@ func (root *Tree) Move(src []string, dst []string) error {
 	return nil
 }
 
-func (root *Tree) getValue(src []string) (any, error) {
+func (root *Tree) GetValue(src []string) (any, error) {
 	const emsg = "do not match kind: %v"
 	var result any
 
@@ -602,7 +602,7 @@ func (root *Tree) getValue(src []string) (any, error) {
 	return result, nil
 }
 
-func (root *Tree) getValueStr(src []string) (string, error) {
+func (root *Tree) GetValueStr(src []string) (string, error) {
 	const emsg = "do not match kind: %v"
 	var result string
 
@@ -620,7 +620,7 @@ func (root *Tree) getValueStr(src []string) (string, error) {
 	return result, nil
 }
 
-func (root *Tree) getValueInt(src []string) (int64, error) {
+func (root *Tree) GetValueInt(src []string) (int64, error) {
 	const emsg = "do not match kind: %v"
 	var result int64
 
@@ -638,7 +638,7 @@ func (root *Tree) getValueInt(src []string) (int64, error) {
 	return result, nil
 }
 
-func (root *Tree) getValueFloat(src []string) (float64, error) {
+func (root *Tree) GetValueFloat(src []string) (float64, error) {
 	const emsg = "do not match kind: %v"
 	var result float64
 
@@ -656,7 +656,7 @@ func (root *Tree) getValueFloat(src []string) (float64, error) {
 	return result, nil
 }
 
-func (root *Tree) getValueBool(src []string) (bool, error) {
+func (root *Tree) GetValueBool(src []string) (bool, error) {
 	const emsg = "do not match kind: %v"
 	var result bool
 
@@ -674,7 +674,7 @@ func (root *Tree) getValueBool(src []string) (bool, error) {
 	return result, nil
 }
 
-func (root *Tree) setValue(value any, src []string) error {
+func (root *Tree) SetValue(value any, src []string) error {
 	tw, err := root.Find(src)
 	if err != nil {
 		return err
@@ -714,7 +714,7 @@ func (root *Tree) getString(sep string, src []string) (string, error) {
 	return result, nil
 }
 
-func (root *Tree) setMaping(m map[string]any, src []string) error {
+func (root *Tree) SetMaping(m map[string]any, src []string) error {
 	var name string
 
 	if v, ok := m["name"]; ok {
@@ -745,7 +745,7 @@ func (root *Tree) setMaping(m map[string]any, src []string) error {
 				return err
 			}
 		} else {
-			err = root.setValue(m[k], chd)
+			err = root.SetValue(m[k], chd)
 			if err != nil {
 				return err
 			}
@@ -755,10 +755,10 @@ func (root *Tree) setMaping(m map[string]any, src []string) error {
 	return nil
 }
 
-func (root *Tree) setMapings(ms []map[string]any, src []string) error {
+func (root *Tree) SetMapings(ms []map[string]any, src []string) error {
 	for i := range ms {
 		m := ms[i]
-		err := root.setMaping(m, src)
+		err := root.SetMaping(m, src)
 		if err != nil {
 			return err
 		}
@@ -766,7 +766,7 @@ func (root *Tree) setMapings(ms []map[string]any, src []string) error {
 	return nil
 }
 
-func (root *Tree) getMaping(name string, src []string) (map[string]any, error) {
+func (root *Tree) GetMaping(name string, src []string) (map[string]any, error) {
 	dst := append(src, name)
 	tw, err := root.Find(dst)
 	if err != nil {
@@ -787,7 +787,7 @@ func (root *Tree) getMaping(name string, src []string) (map[string]any, error) {
 	return m, nil
 }
 
-func (root *Tree) getMapings(src []string) ([]map[string]any, error) {
+func (root *Tree) GetMapings(src []string) ([]map[string]any, error) {
 	var result []map[string]any
 
 	tw, err := root.Find(src)
@@ -798,7 +798,7 @@ func (root *Tree) getMapings(src []string) ([]map[string]any, error) {
 	for i := range tw.Childs {
 		ctw := tw.Childs[i]
 		m := make(map[string]any)
-		m, err = root.getMaping(ctw.Name, src)
+		m, err = root.GetMaping(ctw.Name, src)
 		if err != nil {
 			return result, err
 		}
