@@ -46,7 +46,7 @@ func fullPath(fileName string) (string, error) {
 	return fileName, nil
 }
 
-func (tw *Twig) Set(name string, value any) error {
+func (tw *Twig) set(name string, value any) error {
 	tw.Name = name
 	tw.setKind(value)
 
@@ -97,7 +97,7 @@ func (tw *Twig) setKind(value any) error {
 	return nil
 }
 
-func (tw *Twig) Get(kind ...string) any {
+func (tw *Twig) get(kind ...string) any {
 	var result any
 	var k string
 	//var k string
@@ -225,9 +225,9 @@ func (root *Tree) Create(fileName string, indent string) error {
 	var rt Twig
 	var op Twig
 	var id Twig
-	rt.Set("root", nil)
-	op.Set("options", nil)
-	id.Set("indent", indent)
+	rt.set("root", nil)
+	op.set("options", nil)
+	id.set("indent", indent)
 
 	op.Childs = append(op.Childs, id)
 	rt.Childs = append(rt.Childs, op)
@@ -468,7 +468,7 @@ func (root *Tree) AddNew(name string, value any, dst []string) error {
 	}
 
 	var tw Twig
-	err = tw.Set(name, value)
+	err = tw.set(name, value)
 	if err != nil {
 		return err
 	}
@@ -518,7 +518,7 @@ func (root *Tree) Copy(src []string, dst []string) error {
 			child := src.Childs[i]
 
 			var w Twig
-			w.Set(child.Name, child.Value)
+			w.set(child.Name, child.Value)
 			err := _copy(&child, &w)
 			if err != nil {
 				return err
@@ -539,7 +539,7 @@ func (root *Tree) Copy(src []string, dst []string) error {
 	}
 
 	var tw Twig
-	tw.Set(fs.Name, fs.Value)
+	tw.set(fs.Name, fs.Value)
 	_copy(fs, &tw)
 	for i := range tw.Childs {
 		fd.Childs = append(fd.Childs, tw.Childs[i])
@@ -597,7 +597,7 @@ func (root *Tree) GetValue(src []string) (any, error) {
 		return nil, fmt.Errorf("kind is null: %v", src)
 	}
 
-	result = tw.Get()
+	result = tw.get()
 
 	return result, nil
 }
@@ -615,7 +615,7 @@ func (root *Tree) GetValueStr(src []string) (string, error) {
 		return result, fmt.Errorf("value is null: %v", src)
 	}
 
-	result = tw.Get("string").(string)
+	result = tw.get("string").(string)
 
 	return result, nil
 }
@@ -633,7 +633,7 @@ func (root *Tree) GetValueInt(src []string) (int64, error) {
 		return result, fmt.Errorf("value is null: %v", src)
 	}
 
-	result = tw.Get("integer").(int64)
+	result = tw.get("integer").(int64)
 
 	return result, nil
 }
@@ -651,7 +651,7 @@ func (root *Tree) GetValueFloat(src []string) (float64, error) {
 		return result, fmt.Errorf("value is null: %v", src)
 	}
 
-	result = tw.Get("float").(float64)
+	result = tw.get("float").(float64)
 
 	return result, nil
 }
@@ -669,7 +669,7 @@ func (root *Tree) GetValueBool(src []string) (bool, error) {
 		return result, fmt.Errorf("value is null: %v", src)
 	}
 
-	result = tw.Get("bool").(bool)
+	result = tw.get("bool").(bool)
 
 	return result, nil
 }
@@ -680,7 +680,7 @@ func (root *Tree) SetValue(value any, src []string) error {
 		return err
 	}
 
-	err = tw.Set(tw.Name, value)
+	err = tw.set(tw.Name, value)
 	if err != nil {
 		return err
 	}
@@ -688,7 +688,7 @@ func (root *Tree) SetValue(value any, src []string) error {
 	return nil
 }
 
-func (root *Tree) getString(sep string, src []string) (string, error) {
+func (root *Tree) GetString(sep string, src []string) (string, error) {
 	var result string
 	var v string
 
@@ -703,7 +703,7 @@ func (root *Tree) getString(sep string, src []string) (string, error) {
 
 	for i := range tw.Childs {
 		ctw := tw.Childs[i]
-		v = ctw.Get("string").(string)
+		v = ctw.get("string").(string)
 
 		result = result + ctw.Name + "=" + v
 
@@ -779,7 +779,7 @@ func (root *Tree) GetMaping(name string, src []string) (map[string]any, error) {
 	for i := range tw.Childs {
 		ctw := tw.Childs[i]
 		n := ctw.Name
-		v := ctw.Get()
+		v := ctw.get()
 
 		m[n] = v
 	}
