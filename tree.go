@@ -13,7 +13,7 @@ import (
 
 type any = interface{}
 
-type Twig struct {
+type twig struct {
 	Name   string `json:"name"`
 	Kind   string `json:"kind"`
 	Value  any    `json:"value"`
@@ -46,14 +46,14 @@ func fullPath(fileName string) (string, error) {
 	return fileName, nil
 }
 
-func (tw *Twig) set(name string, value any) error {
+func (tw *twig) set(name string, value any) error {
 	tw.Name = name
 	tw.setKind(value)
 
 	return nil
 }
 
-func (tw *Twig) setKind(value any) error {
+func (tw *twig) setKind(value any) error {
 	switch x := value.(type) {
 	case string:
 		tw.Value = x
@@ -97,7 +97,7 @@ func (tw *Twig) setKind(value any) error {
 	return nil
 }
 
-func (tw *Twig) get(kind ...string) any {
+func (tw *twig) get(kind ...string) any {
 	var result any
 	var k string
 	//var k string
