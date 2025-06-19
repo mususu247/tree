@@ -17,11 +17,11 @@ type twig struct {
 	Name   string `json:"name"`
 	Kind   string `json:"kind"`
 	Value  any    `json:"value"`
-	Childs []Twig `json:"childs"`
+	Childs []twig `json:"childs"`
 }
 
 type Tree struct {
-	Base     *Twig
+	Base     *twig
 	fileName string
 	Indent   string
 }
@@ -222,9 +222,9 @@ func (tw *twig) get(kind ...string) any {
 }
 
 func (root *Tree) Create(fileName string, indent string) error {
-	var rt Twig
-	var op Twig
-	var id Twig
+	var rt twig
+	var op twig
+	var id twig
 	rt.set("root", nil)
 	op.set("options", nil)
 	id.set("indent", indent)
@@ -380,7 +380,7 @@ func (root *Tree) Save() error {
 	return nil
 }
 
-func (root *Tree) Find(names []string) (*Twig, error) {
+func (root *Tree) Find(names []string) (*twig, error) {
 	var count int = 0
 
 	if root.Base == nil {
@@ -407,7 +407,7 @@ func (root *Tree) Find(names []string) (*Twig, error) {
 	return nil, fmt.Errorf("not found: %v", names[count])
 }
 
-func (root *Tree) findPlus(names []string) (*Twig, *Twig, error) {
+func (root *Tree) findPlus(names []string) (*twig, *twig, error) {
 	var count int
 
 	if root.Base == nil {
@@ -467,7 +467,7 @@ func (root *Tree) AddNew(name string, value any, dst []string) error {
 		}
 	}
 
-	var tw Twig
+	var tw twig
 	err = tw.set(name, value)
 	if err != nil {
 		return err
@@ -478,9 +478,9 @@ func (root *Tree) AddNew(name string, value any, dst []string) error {
 }
 
 func (root *Tree) Delete(dst []string) error {
-	var _delete func(t *Twig) error
+	var _delete func(t *twig) error
 
-	_delete = func(t *Twig) error {
+	_delete = func(t *twig) error {
 		for i := range t.Childs {
 			_delete(&t.Childs[i])
 		}
@@ -498,7 +498,7 @@ func (root *Tree) Delete(dst []string) error {
 	}
 	td.Childs = nil
 
-	var tw Twig
+	var tw twig
 	tw.Childs = tr.Childs
 	tr.Childs = nil
 	for i := range tw.Childs {
@@ -511,13 +511,13 @@ func (root *Tree) Delete(dst []string) error {
 }
 
 func (root *Tree) Copy(src []string, dst []string) error {
-	var _copy func(src *Twig, dst *Twig) error
+	var _copy func(src *twig, dst *twig) error
 
-	_copy = func(src *Twig, dst *Twig) error {
+	_copy = func(src *twig, dst *twig) error {
 		for i := range src.Childs {
 			child := src.Childs[i]
 
-			var w Twig
+			var w twig
 			w.set(child.Name, child.Value)
 			err := _copy(&child, &w)
 			if err != nil {
@@ -538,7 +538,7 @@ func (root *Tree) Copy(src []string, dst []string) error {
 		return err
 	}
 
-	var tw Twig
+	var tw twig
 	tw.set(fs.Name, fs.Value)
 	_copy(fs, &tw)
 	for i := range tw.Childs {
